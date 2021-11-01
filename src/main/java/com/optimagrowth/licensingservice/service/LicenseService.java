@@ -1,8 +1,11 @@
 package com.optimagrowth.licensingservice.service;
 
 import com.optimagrowth.licensingservice.model.License;
+import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Random;
 import java.util.SplittableRandom;
 
@@ -11,7 +14,10 @@ import java.util.SplittableRandom;
  * @since 1/11/21
  */
 @Service
+@AllArgsConstructor
 public class LicenseService {
+    MessageSource messageSource;
+
     public License getLicense(String licenseId, String organizationId) {
         License license = License.builder().build();
         license.setId(new Random().nextInt(1000));
@@ -24,11 +30,11 @@ public class LicenseService {
         return license;
     }
 
-    public String createLicense(License license, String organizationId){
+    public String createLicense(License license, String organizationId, Locale locale){
         String responseMessage = null;
         if (license != null){
             license.setOrganizatonId(organizationId);
-            responseMessage = String.format("This is the post and the object is: %s", license.toString());
+            responseMessage = String.format(messageSource.getMessage("license.create.message", null, locale), license.toString());
         }
 
         return responseMessage;
@@ -38,7 +44,8 @@ public class LicenseService {
         String responseMessage = null;
         if (license != null){
             license.setOrganizatonId(organizationId);
-            responseMessage = String.format("This is the put and the object is: %s", license.toString());
+            responseMessage = String.format(messageSource.getMessage("license.update.message", null, null),
+                                            license.toString()); // will use default locale
         }
 
         return responseMessage;
